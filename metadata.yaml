@@ -1,6 +1,9 @@
 homepage: "https://www.simoahava.com/"
+documentation: "https://www.simoahava.com/analytics/fetch-ip-geolocation-data-using-google-tag-manager/"
 versions:
   # Latest version
+  - sha: d93195a2c0f28742b7a3940208bcb73eae5caa17
+    changeNotes: Add IP hashing as an option.
+  # Older versions  
   - sha: 216b50425dd1211f11b05b8f6a38980fbae277a4
     changeNotes: Initial release.
-  # Older versions
