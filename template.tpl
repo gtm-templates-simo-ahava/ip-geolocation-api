@@ -215,6 +215,9 @@ const error = msg => {
 };
 
 const handleResponse = resp => {
+  if (window['Storage']) {
+    sessionStorage.setItem('_ipgeolocationData', JSON.stringify(resp));
+  }
   const dataLayerPush = createQueue(data.dataLayerName);
   if (data.addHashedIp) {
     sha256(resp.ip, digest => {
@@ -247,7 +250,15 @@ const geolocate = () => {
   if (data.fieldsToExclude) {
     callInWindow('setExcludesParameter', data.fieldsToExclude);
   }
-  callInWindow('getGeolocation', handleResponse, data.apiKey);
+  if (window['Storage']) {
+    if (!sessionStorage.getItem('_ipgeolocationData')) {
+      callInWindow('getGeolocation', handleResponse, data.apiKey);
+    } else {
+      callInWindow('handleResponse', JSON.parse(sessionStorage.getItem('_ipgeolocationData')));
+    }
+  } else {
+    callInWindow('getGeolocation', handleResponse, data.apiKey);
+  }
 };
 
 const init = () => {
