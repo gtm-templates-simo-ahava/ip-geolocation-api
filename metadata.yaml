@@ -2,6 +2,11 @@ homepage: "https://www.simoahava.com/"
 documentation: "https://www.simoahava.com/analytics/fetch-ip-geolocation-data-using-google-tag-manager/"
 versions:
   # Latest version
+  - sha: 3e5e4c44ceae07d40364e65d96339a0f05420fe9
+    changeNotes: |2
+      Use latest version of API which does not require jQuery.
+      Add option for caching to sessionStorage (to reduce API calls).
+  # Latest version
   - sha: d93195a2c0f28742b7a3940208bcb73eae5caa17
     changeNotes: Add IP hashing as an option.
   # Older versions  
