@@ -42,6 +42,13 @@ ___TEMPLATE_PARAMETERS___
     "alwaysInSummary": true
   },
   {
+    "type": "CHECKBOX",
+    "name": "enableSessionStorage",
+    "checkboxText": "Enable Session Storage",
+    "simpleValueType": true,
+    "help": "Allow the API to automatically cache and access the data in browser storage to limit API requests by the same browser."
+  },
+  {
     "type": "GROUP",
     "name": "dataLayerSettings",
     "displayName": "Data Layer Settings",
@@ -194,20 +201,13 @@ ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 // APIs
 const injectScript = require('injectScript');
 const copyFromWindow = require('copyFromWindow');
-const callInWindow = require('callInWindow');
-const setInWindow = require('setInWindow');
 const createQueue = require('createQueue');
 const sha256 = require('sha256');
 const log = require('logToConsole');
 
 // Utilities
-const latestjQueryVersion = '1.4.1';
-const latestGeoVersion = '1.0.6';
-const jQueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/' + latestjQueryVersion + '/jquery.min.js';
+const latestGeoVersion = '1.1.0';
 const geoUrl = 'https://cdn.jsdelivr.net/npm/ip-geolocation-api-jquery-sdk@' + latestGeoVersion + '/ipgeolocation.min.js';
-
-// Check if jQuery loaded
-const jQueryLoaded = !!copyFromWindow('jQuery');
 
 const error = msg => {
   log(msg);
@@ -235,28 +235,27 @@ const handleResponse = resp => {
 };
 
 const geolocate = () => {
+  const ipGeo = copyFromWindow('_ipgeolocation');
+  if (data.enableSessionStorage) {
+    ipGeo.enableSessionStorage(true);
+  }
   if (data.customIp) {
-    callInWindow('setIPAddressParameter', data.customIp);
+    ipGeo.setIPAddressParameter(data.customIp);
   }
   if (data.responseLanguage !== 'en') {
-    callInWindow('setLanguageParameter', data.responseLanguage);
+    ipGeo.setLanguageParameter(data.responseLanguage);
   }
   if (data.fieldsToInclude) {
-    callInWindow('setFieldsParameter', data.fieldsToInclude);
+    ipGeo.setFieldsParameter(data.fieldsToInclude);
   }
   if (data.fieldsToExclude) {
-    callInWindow('setExcludesParameter', data.fieldsToExclude);
+    ipGeo.setExcludesParameter(data.fieldsToExclude);
   }
-  callInWindow('getGeolocation', handleResponse, data.apiKey);
+  ipGeo.getGeolocation(handleResponse, data.apiKey);
 };
 
-const init = () => {
-  injectScript(geoUrl, geolocate, () => error('Failed to load IP Geolocation SDK'), 'geolocation');
-};
+injectScript(geoUrl, geolocate, () => error('Failed to load IP Geolocation SDK'), 'geolocation');
 
-if (!jQueryLoaded) {
-  injectScript(jQueryUrl, init, () => error('Failed to load jQuery'), 'jquery');
-} else { init(); }
 
 
 ___WEB_PERMISSIONS___
@@ -354,202 +353,7 @@ ___WEB_PERMISSIONS___
                 "mapValue": [
                   {
                     "type": 1,
-                    "string": "setIPAddressParameter"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "setLanguageParameter"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "setFieldsParameter"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "setExcludesParameter"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "getGeolocation"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "jQuery"
+                    "string": "_ipgeolocation"
                   },
                   {
                     "type": 8,
@@ -589,10 +393,6 @@ ___WEB_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "https://ajax.googleapis.com/ajax/libs/jquery/*/jquery.min.js"
-              },
-              {
-                "type": 1,
                 "string": "https://cdn.jsdelivr.net/npm/ip-geolocation-api-jquery-sdk@*/ipgeolocation.min.js"
               }
             ]
@@ -613,47 +413,23 @@ ___TESTS___
 scenarios:
 - name: Scripts are loaded properly
   code: |-
-    let jQueryLoaded = false;
     let geoLocateLoaded = false;
     mock('injectScript', (url, cb) => {
-      if (url.indexOf('https://ajax.googleapis.com/ajax/libs/jquery/') > -1) {
-        jQueryLoaded = true;
-      }
       if (url.indexOf('https://cdn.jsdelivr.net/npm/ip-geolocation-api-jquery-sdk@') > -1) {
         geoLocateLoaded = true;
       }
       cb();
     });
-    mock('callInWindow', (variable, param1, param2) => {
-      if (variable === 'getGeolocation') param1();
-    });
-
-    // Call runCode to run the template's code.
-    runCode(mockData);
-
-    if (!jQueryLoaded) fail('jQuery not loaded');
-    if (!geoLocateLoaded) fail('IP Geolocation API SDK not loaded');
-
-    // Verify that the tag finished successfully.
-    assertApi('gtmOnSuccess').wasCalled();
-- name: Params are set properly
-  code: |-
-    mock('injectScript', (url, cb) => {
-      cb();
-    });
-    mock('callInWindow', (variable, param1, param2) => {
-      if (variable === 'setIPAddressParameter' && (param1 !== mockData.customIp || param1 === undefined)) fail('Failed to set custom IP address');
-      if (variable === 'setLanguageParameter' && (param1 !== mockData.responseLanguage || param1 === undefined)) fail('Failed to set custom response language');
-      if (variable === 'setFieldsParameter' && (param1 !== mockData.fieldsToInclude || param1 === undefined)) fail('Failed to set custom include fields');
-      if (variable === 'setExcludesParameter' && (param1 !== mockData.fieldsToExclude || param1 === undefined)) fail('Failed to set custom exclude fields');
-      if (variable === 'getGeolocation') {
-        if (param2 !== mockData.apiKey || param2 === undefined) { fail('Failed to send API Key'); }
-        else { param1(); }
+    mock('copyFromWindow', (variable) => {
+      if (variable === '_ipgeolocation') {
+        return mockObj;
       }
     });
 
     // Call runCode to run the template's code.
     runCode(mockData);
+
+    if (!geoLocateLoaded) fail('IP Geolocation API SDK not loaded');
 
     // Verify that the tag finished successfully.
     assertApi('gtmOnSuccess').wasCalled();
@@ -662,8 +438,10 @@ scenarios:
     mock('injectScript', (url, cb) => {
       cb();
     });
-    mock('callInWindow', (variable, param1, param2) => {
-      if (variable === 'getGeolocation') param1(mockGeoData);
+    mock('copyFromWindow', (variable) => {
+      if (variable === '_ipgeolocation') {
+        return mockObj;
+      }
     });
     mock('createQueue', name => {
       if (name !== mockData.dataLayerName) fail('Failed to create dataLayer queue');
@@ -687,8 +465,10 @@ scenarios:
     mock('sha256', (digest, cb) => {
       cb('hashed');
     });
-    mock('callInWindow', (variable, param1, param2) => {
-      if (variable === 'getGeolocation') param1(mockGeoData);
+    mock('copyFromWindow', (variable) => {
+      if (variable === '_ipgeolocation') {
+        return mockObj;
+      }
     });
     mock('createQueue', name => {
       if (name !== mockData.dataLayerName) fail('Failed to create dataLayer queue');
@@ -707,6 +487,7 @@ scenarios:
 setup: |-
   const mockData = {
     apiKey: 'test',
+    enableSessionStorage: false,
     dataLayerName: 'dataLayer',
     customEventName: 'geolocate',
     customIp: '1.2.3.4',
@@ -717,6 +498,15 @@ setup: |-
 
   const mockGeoData = {
     resp: true
+  };
+
+  const mockObj = {
+    enableSessionStorage: arg => { if (arg !== mockData.enableSessionStorage) fail('enableSessionStorage called with incorrect parameter'); },
+    setIPAddressParameter: arg => { if (arg !== mockData.customIp) fail('setIPAddressParameter called with incorrect parameter'); },
+    setLanguageParameter: arg => { if (arg !== mockData.responseLanguage) fail('setLanguageParameter called with incorrect parameter'); },
+    setFieldsParameter: arg => { if (arg !== mockData.fieldsToInclude) fail('fieldsToInclude called with incorrect parameter'); },
+    setExcludesParameter: arg => { if (arg !== mockData.fieldsToExclude) fail('fieldsToExclude called with incorrect parameter'); },
+    getGeolocation: (arg1, arg2) => { if (arg2 !== mockData.apiKey) { fail('getGeoLocation called with incorrect parameter'); } else { arg1(mockGeoData); } }
   };
 
 
