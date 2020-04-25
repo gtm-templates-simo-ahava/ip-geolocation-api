@@ -2,7 +2,7 @@ homepage: "https://www.simoahava.com/"
 documentation: "https://www.simoahava.com/analytics/fetch-ip-geolocation-data-using-google-tag-manager/"
 versions:
   # Latest version
-  - sha: 3e5e4c44ceae07d40364e65d96339a0f05420fe9
+  - sha: 82cabe8122fdd24e3dbb6a438d226e73d294e47e
     changeNotes: |2
       Use latest version of API which does not require jQuery.
       Add option for caching to sessionStorage (to reduce API calls).
