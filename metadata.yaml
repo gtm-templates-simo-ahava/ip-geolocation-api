@@ -1,5 +1,5 @@
 homepage: "https://www.simoahava.com/"
-documentation: "https://www.simoahava.com/analytics/fetch-ip-geolocation-data-using-google-tag-manager/"
+documentation: "https://www.simoahava.com/custom-templates/ip-geolocation-api/"
 versions:
   # Latest version
   - sha: 82cabe8122fdd24e3dbb6a438d226e73d294e47e
