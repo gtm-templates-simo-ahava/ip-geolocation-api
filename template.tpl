@@ -240,22 +240,21 @@ const geolocate = () => {
     ipGeo.enableSessionStorage(true);
   }
   if (data.customIp) {
-    ipGeo.setIPAddressParameter(data.customIp);
+    ipGeo.setIPAddress(data.customIp);
   }
   if (data.responseLanguage !== 'en') {
-    ipGeo.setLanguageParameter(data.responseLanguage);
+    ipGeo.setLanguage(data.responseLanguage);
   }
   if (data.fieldsToInclude) {
-    ipGeo.setFieldsParameter(data.fieldsToInclude);
+    ipGeo.setFields(data.fieldsToInclude);
   }
   if (data.fieldsToExclude) {
-    ipGeo.setExcludesParameter(data.fieldsToExclude);
+    ipGeo.setExcludes(data.fieldsToExclude);
   }
   ipGeo.getGeolocation(handleResponse, data.apiKey);
 };
 
 injectScript(geoUrl, geolocate, () => error('Failed to load IP Geolocation SDK'), 'geolocation');
-
 
 
 ___WEB_PERMISSIONS___
@@ -502,10 +501,10 @@ setup: |-
 
   const mockObj = {
     enableSessionStorage: arg => { if (arg !== mockData.enableSessionStorage) fail('enableSessionStorage called with incorrect parameter'); },
-    setIPAddressParameter: arg => { if (arg !== mockData.customIp) fail('setIPAddressParameter called with incorrect parameter'); },
-    setLanguageParameter: arg => { if (arg !== mockData.responseLanguage) fail('setLanguageParameter called with incorrect parameter'); },
-    setFieldsParameter: arg => { if (arg !== mockData.fieldsToInclude) fail('fieldsToInclude called with incorrect parameter'); },
-    setExcludesParameter: arg => { if (arg !== mockData.fieldsToExclude) fail('fieldsToExclude called with incorrect parameter'); },
+    setIPAddress: arg => { if (arg !== mockData.customIp) fail('setIPAddressParameter called with incorrect parameter'); },
+    setLanguage: arg => { if (arg !== mockData.responseLanguage) fail('setLanguageParameter called with incorrect parameter'); },
+    setFields: arg => { if (arg !== mockData.fieldsToInclude) fail('fieldsToInclude called with incorrect parameter'); },
+    setExcludes: arg => { if (arg !== mockData.fieldsToExclude) fail('fieldsToExclude called with incorrect parameter'); },
     getGeolocation: (arg1, arg2) => { if (arg2 !== mockData.apiKey) { fail('getGeoLocation called with incorrect parameter'); } else { arg1(mockGeoData); } }
   };
 
